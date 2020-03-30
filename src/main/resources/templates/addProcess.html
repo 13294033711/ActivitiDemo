@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>生成流程</title>
+</head>
+<body>
+<body>
+<h2>
+    <a th:href="@{/create(name='activiti',key='123456')}">绘制流程</a>
+</h2>
+<div>
+    <table width="100%">
+        <tr>
+            <td width="10%">模型编号</td>
+            <td width="10%">版本</td>
+            <td width="20%">模型名称</td>
+            <td width="20%">模型key</td>
+            <td width="40%">操作</td>
+        </tr>
+        <tr th:each="processModel: ${modelList}">
+            <td width="10%" th:text="${processModel.getId()}"></td>
+            <td width="10%" th:text="${processModel.getVersion()}"></td>
+            <td width="20%" th:text="${processModel.getName()}"></td>
+            <td width="20%" th:text="${processModel.getKey()}"></td>
+            <td width="40%">
+                <a th:href="@{/editor(modelId=${processModel.getId()})}">编辑</a>
+                <a th:href="@{/publish(modelId=${processModel.getId()})}">发布</a>
+                <a th:href="@{/revokePublish(modelId=${processModel.getId()})}">撤销</a>
+                <a th:href="@{/delete(modelId=${processModel.getId()})}">删除</a>
+                <a th:href="@{/export(modelId=${processModel.getId()})}">导出</a>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

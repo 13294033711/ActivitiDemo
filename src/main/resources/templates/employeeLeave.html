@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <script th:src="@{/jquery.min.js}" type="text/javascript"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <title>请假表单</title>
+</head>
+<script th:inline="none"></script>
+<body>
+    <!--<form class="form-horizontal" action="#" method="post" th:object="${askForm}" th:action="@{/demo/employeeApply}">-->
+    <form class="form-horizontal" action="#" method="post" th:object="${askForm}" th:action="@{/leave/employeeApply}">
+        <fieldset>
+            <legend>填写请假单</legend>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">请假类型</label>
+                <div class="col-sm-4">
+                    <select  name="leaveType" id="leaveType" class="form-control1" >
+                        <option value="nunalLeave" th:field="*{leaveType}">年假</option>
+                        <option value="breakOff" th:field="*{leaveType}">调休假</option>
+                    </select>
+                </div>
+                <label class="col-sm-2 control-label">工号</label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" th:field="*{jobNumber}"/>
+                </div>
+                <label class="col-sm-2 control-label">请假天数</label>
+                <div class="col-sm-3">
+                    <input class="form-control" type="text" th:field="*{leaveDays}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">请假原因</label>
+                <div class="col-sm-4">
+                    <textarea class="form-control" type="text" th:field="*{leaveReason}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-6 col-md-offset-3">
+                    <input class="btn btn-primary" type="submit" value="提交"/>
+                    <a class="btn btn-danger text-center" th:href="@{/}">取消</a>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</body>
+</html>

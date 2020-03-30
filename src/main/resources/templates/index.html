@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>首页</title>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <script th:src="@{/jquery.min.js}" type="text/javascript"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            // 绑定查看流程图
+            $("#show-img").bind("click", function(){
+                var instanceId = $("input[name='instanceId']").val();
+                if(instanceId == "") {
+                    alert("暂无流程！");
+                    return;
+                }
+                var imgHtml = '<embed src="/demo/show/img?instanceId=' + instanceId + '" style="display:block;width:1000px;height:450px" />';
+                // var imgHtml = '<embed th:src="@{/demo/show/img(instanceId=instanceId)}" style="display:block;width:1000px;height:450px" />';
+                // var ih = $.parseHTML(imgHtml);
+                $(".result-div").html(imgHtml);
+            });
+
+            // 查看请假流程单列表
+            $("#ask-leave_manage").bind("click", function(){
+                $.ajax({
+                    async : false,
+                    cache : false,
+                    type : 'get',
+                    url : "/askForm/list",
+                    dataType : "html",
+                    error : function() {
+                        alert('请求失败');
+                    },
+                    success : function(data) {
+                        $(".result-div").html(data);
+                    }
+                });
+            });
+
+            // 查看任务
+            $("#show-task").bind("click", function(){
+                $.ajax({
+                    async : false,
+                    cache : false,
+                    type : 'get',
+                    url : "/leave/toShowTask",
+                    // url : "/demo/toShowTask",
+                    dataType : "html",
+                    error : function() {
+                        alert('请求失败');
+                    },
+                    success : function(data) {
+                        $(".result-div").html(data);
+                    }
+                });
+            });
+
+            // 查看已办任务
+            $("#show-done-task").bind("click", function(){
+                $.ajax({
+                    async : false,
+                    cache : false,
+                    type : 'get',
+                    url : "/leave/queryDoneTasks",
+                    // url : "/demo/toShowTask",
+                    dataType : "html",
+                    error : function() {
+                        alert('请求失败');
+                    },
+                    success : function(data) {
+                        $(".result-div").html(data);
+                    }
+                });
+            });
+
+            var socket;
+            var un = "[[${session.USER_INFO.getName()}]]";
+            if(typeof (WebSocket) == "undefined") {
+                console.log("您的浏览器不支持WS");
+            }else {
+                socket = new WebSocket("ws://localhost:8080/websocket/" + un);
+                socket.onopen = function (ev) {
+                    // socket.send("建立连接");
+                }
+                socket.onmessage = function (ev) {
+                    alert(ev.data);
+                }
+                socket.onclose = function (ev) {
+                    console.log("关闭连接");
+                }
+                socket.onerror = function (ev) {
+                    alert("ws发生错误");
+                }
+            }
+        });
+
+    </script>
+</head>
+<body>
+<!-- 菜单栏 -->
+<div class="main-menu">
+    <a id="ask-leave" class="btn btn-primary" th:classappend="${session.USER_ROLE.contains('ROLE_MANAGE_USER')?'hidden':''}" th:href="@{/leave/toLeave}">开始请假</a>
+    <button id="ask-leave_manage" class="btn btn-primary" th:classappend="${session.USER_ROLE.contains('ROLE_MANAGE_USER')?'hidden':''}">请假单管理</button>
+    <!--<a id="ask-leave_managess" class="btn btn-primary" th:classappend="${session.USER_ROLE.contains('ROLE_MANAGE_USER')?'hidden':''}" th:href="@{/askForm/list}">请假单管理</a>-->
+    <button id="show-img" class="btn btn-primary">查看流程图</button>
+    <button id="show-task" class="btn btn-primary" th:classappend="${!session.USER_ROLE.contains('ROLE_MANAGE_USER')?'hidden':''}">查看待办任务</button>
+    <button id="show-done-task" class="btn btn-primary" th:classappend="${!session.USER_ROLE.contains('ROLE_MANAGE_USER')?'hidden':''}">查看已办任务</button>
+    <a id="add-Process" class="btn btn-primary" th:href="@{/addProcess}">模型管理</a>
+
+    <span id="user-info" class="pull-right"  th:text="${session.USER_INFO.getName()}"/>
+    <a id="logout" class="pull-right btn btn-danger" th:href="@{/logout}">退出</a>
+</div>
+<br/>
+<input style="display:none" type="text" name="instanceId" id="instanceId"/>
+<br/>
+<!-- 操作栏 -->
+<div class="main-body">
+
+</div>
+<br/>
+<!-- 结果栏 -->
+<div class="result-div">
+    <br>
+</div>
+</body>
+</html>
